@@ -29,6 +29,17 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Curar(float quantidade)
+    {
+        if (estaMorto) return;
+
+        vida += quantidade;
+        vida = Mathf.Min(vida, 100f); // limita o m√°ximo em 100
+
+        AtualizarTextoVida(); // ‚úÖ agora o texto atualiza ao curar
+        Debug.Log("Player curou! Vida atual: " + vida);
+    }
+
     void AtualizarTextoVida()
     {
         if (textoVida != null)
@@ -42,36 +53,31 @@ public class Player : MonoBehaviour
         estaMorto = true;
         Debug.Log("Player morreu!");
 
-        // Desativa fÌsica e colis„o
+        // Desativa f√≠sica e colis√£o
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null) rb.simulated = false;
 
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
 
-        // Toca animaÁ„o de morte
+        // Toca anima√ß√£o de morte
         if (animator != null)
         {
             animator.SetTrigger("Morrer");
-            // Inicia Coroutine para aguardar a animaÁ„o antes do GameOver
+            // Inicia Coroutine para aguardar a anima√ß√£o antes do GameOver
             StartCoroutine(AguardarAnimacaoAntesDeGameOver());
         }
         else
         {
-            // Caso n„o tenha Animator
+            // Caso n√£o tenha Animator
             FindFirstObjectByType<GameManager>().GameOver();
         }
     }
 
     IEnumerator AguardarAnimacaoAntesDeGameOver()
     {
-        // Aguarda o tempo da animaÁ„o de morte
-        AnimatorStateInfo estado = animator.GetCurrentAnimatorStateInfo(0);
-        
-
-        
+        // Aguarda o tempo da anima√ß√£o de morte
         float duracaoAnimacao = 3f;
-
         yield return new WaitForSeconds(duracaoAnimacao);
 
         FindFirstObjectByType<GameManager>().GameOver();
