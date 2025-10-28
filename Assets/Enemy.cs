@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Introduction()
     {
-        Debug.Log("Meu nome é " + nome + ", minha vida é " + vida + " e o máximo da vida é " + maxVida);
+        //Debug.Log("Meu nome é " + nome + ", minha vida é " + vida + " e o máximo da vida é " + maxVida);
     }
 
     void Move()
