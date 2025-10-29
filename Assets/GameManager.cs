@@ -4,21 +4,27 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Tela de Game Over")]
+    [Header("Telas")]
     public GameObject gameOverUI;
+    public GameObject vitoriaUI; // nova tela de vitória
 
     [Header("Pontuação")]
     public TextMeshProUGUI textoPontuacao;
     public float pontuacao = 0f;
-    public float velocidadePontuacao = 10f; // pontos por segundo
+    public float velocidadePontuacao = 10f;
     private bool jogoAtivo = true;
 
     void Start()
     {
-        Time.timeScale = 1f; // garante que o tempo começa normal
+        Time.timeScale = 1f;
         jogoAtivo = true;
         pontuacao = 0f;
         AtualizarTextoPontuacao();
+
+        if (gameOverUI != null)
+            gameOverUI.SetActive(false);
+        if (vitoriaUI != null)
+            vitoriaUI.SetActive(false);
     }
 
     void Update()
@@ -33,26 +39,29 @@ public class GameManager : MonoBehaviour
     void AtualizarTextoPontuacao()
     {
         if (textoPontuacao != null)
-        {
             textoPontuacao.text = "Pontos: " + Mathf.FloorToInt(pontuacao).ToString("00000");
-        }
     }
 
     public void GameOver()
     {
-        if (!jogoAtivo) return; // evita chamar duas vezes
+        if (!jogoAtivo) return;
         jogoAtivo = false;
-
-        // Primeiro mostra o painel
-        gameOverUI.SetActive(true);
-
-        // Depois pausa o jogo (um pequeno delay ajuda a garantir que a UI renderize)
-        StartCoroutine(PausarJogo());
+        StartCoroutine(MostrarPainel(gameOverUI));
     }
 
-    System.Collections.IEnumerator PausarJogo()
+    public void Vitoria()
     {
-        yield return new WaitForSecondsRealtime(0.1f);
+        if (!jogoAtivo) return;
+        jogoAtivo = false;
+        StartCoroutine(MostrarPainel(vitoriaUI));
+    }
+
+    System.Collections.IEnumerator MostrarPainel(GameObject painel)
+    {
+        if (painel != null)
+            painel.SetActive(true);
+
+        yield return new WaitForEndOfFrame();
         Time.timeScale = 0f;
     }
 
